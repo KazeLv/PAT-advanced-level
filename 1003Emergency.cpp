@@ -36,9 +36,12 @@ int main(){
     	nArr2Map[p2][p1] = len;     //
     }
 
+	path pa;
 	for(int i = 0;i<nCities;i++){
 		if(nArr2Map[nStart][i]!=0){
-
+			if(!exist(nArr2Map[nStart][i],pa)){
+				
+			}
 		}
 	}
 
