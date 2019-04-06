@@ -69,6 +69,6 @@ int main(){
 }
 
 /*
-seceed once!
+succeed once!
 based on a child-sibling tree,traverse the tree in level sequence(based on queue)
 */
