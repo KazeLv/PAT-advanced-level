@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
@@ -35,6 +36,39 @@ int main(){
 		}
 	}
 
+	queue<int> que_traverse;
+	queue<int> que_leafCount;
+
+	//traverse tree in level sequence
+	que_traverse.push(1);
+	while(!que_traverse.empty()){
+		int len = que_traverse.size();										//store number of nodes in this level
+		int iter;
+		que_leafCount.push(0);
+		for(int i = 0;i<len;i++){
+			iter = que_traverse.front();
+			que_traverse.pop();
+			if(tree.nodes[iter].firstChild==0) que_leafCount.back()++;		//hasn't child,count of leaf nodes increase
+			else{
+				que_traverse.push(tree.nodes[iter].firstChild);				//push all child to que_traverse for next level
+				iter = tree.nodes[iter].firstChild;							//
+				while(tree.nodes[iter].nextSibling!=0){						//
+					que_traverse.push(tree.nodes[iter].nextSibling);		//
+					iter = tree.nodes[iter].nextSibling;					//
+				}
+			}
+		}
+	}
 	
+	while(!que_leafCount.empty()){
+		cout<<que_leafCount.front();
+		que_leafCount.pop();
+		if(!que_leafCount.empty()) cout<<" ";
+	}
     return 0;
 }
+
+/*
+seceed once!
+based on a child-sibling tree,traverse the tree in level sequence(based on queue)
+*/
