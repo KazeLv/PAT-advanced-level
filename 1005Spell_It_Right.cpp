@@ -4,12 +4,10 @@
 
 using namespace std;
 
-unsigned int addDigits(unsigned long long &num){
-    unsigned long long t = num;
+unsigned long long addDigits(string &strNum){
     unsigned long long res = 0;
-    while(t>0){
-        res += t % 10;
-        t /= 10;
+    for(int i = 0;i<strNum.length();i++){
+        res += strNum[i]-'0';
     }
     return res;
 }
@@ -37,16 +35,15 @@ void printDigits(unsigned long long &num){
 }
 
 int main(){
-    unsigned long long number;
-    cin>>number;
+    string strNum;
+    cin>>strNum;
 
-    unsigned long long res = addDigits(number);
+    unsigned long long res = addDigits(strNum);
 
     printDigits(res);
     return 0;
 }
 
 /*
-first try,use unsigned long long to read N.But there still is one fault.
-i guess it can be handled by reading to string
+Resolve the problem of digit overflow by reading to string
 */
