@@ -13,7 +13,8 @@ struct Poly {
 	int m_nNonzero;
 	PolyNode *m_pHead;
 	Poly() { m_nNonzero = 0; m_pHead = new PolyNode{-1,-1,nullptr}; }
-	~Poly() {
+
+	void clear() {									//free memmory
 		PolyNode *p = m_pHead->next;
 		PolyNode *q;
 		while (p != nullptr) {
@@ -22,6 +23,7 @@ struct Poly {
 			p = q;
 		}
 	}
+
 	void insert(float coe, int exp) {
 		PolyNode *p;
 		p = m_pHead->next;
@@ -49,16 +51,14 @@ struct Poly {
 
 istream& operator>>(istream &is, Poly& poly) {
 	is >> poly.m_nNonzero;
-	if (poly.m_nNonzero == 0) poly.m_pHead->next = new PolyNode{0,0,nullptr};
-	else {
+	if (poly.m_nNonzero != 0) {
 		float fCoe;
 		int nExp;
-		is >> nExp >> fCoe;
-		poly.m_pHead->next = new PolyNode{ fCoe,nExp,nullptr };
-		PolyNode *q = poly.m_pHead->next;
-		for (int i = 1; i < poly.m_nNonzero; i++) {
+		PolyNode *q = poly.m_pHead;
+		for (int i = 0; i < poly.m_nNonzero; i++) {
 			is >> nExp >> fCoe;
 			q->next = new PolyNode{ fCoe,nExp,nullptr };
+			q = q->next;
 		}
 	}
 	return is;
@@ -75,7 +75,7 @@ Poly operator*(Poly &A, Poly &B) {
 		while (pB != nullptr) {
 			float coe = pA->coe * pB->coe;
 			int exp = pA->exp + pB->exp;
-			res.insert(coe, exp);
+			if(coe!=0) res.insert(coe, exp);
 			pB = pB->next;
 		}
 		pA = pA->next;
@@ -98,23 +98,11 @@ int main() {
 	Poly A, B;
 	cin >> A >> B;
 
-	//Poly res = A * B;
-	Poly res;
-
-	PolyNode *pA = A.m_pHead->next;
-	PolyNode *pB = B.m_pHead->next;
-
-	while (pA != nullptr) {
-		pB = B.m_pHead->next;
-		while (pB != nullptr) {
-			float coe = pA->coe * pB->coe;
-			int exp = pA->exp + pB->exp;
-			res.insert(coe, exp);
-			pB = pB->next;
-		}
-		pA = pA->next;
-	}
+	Poly res = A * B;
 
 	cout << res << endl;
+
+	A.clear();
+	B.clear();
 	return 0;
 }
