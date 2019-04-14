@@ -1,6 +1,6 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <stack>
 
 using namespace std;
 
@@ -9,26 +9,7 @@ struct Way {
 	int m_nRescues;
 };
 
-vector<Way> vec_ways;
-
-//recursion to find all ways from start to end
-void findWay(int **ppnMap, vector<bool> vec_visit, int *pnRescues, int nCities, int nStart, int nEnd, int nLen, int nRescues) {
-	for (int i = 0; i < nCities; i++) {
-		if (ppnMap[nStart][i] != -1 && vec_visit[i] == false) {
-			vector<bool> vec_tVisit = vec_visit;					//copy visit[] for rescursion need
-			vec_tVisit[i] = true;
-			int totalLen = nLen + ppnMap[nStart][i];
-			int totalRescues = nRescues + pnRescues[i];
-			if (i == nEnd) {
-				Way way{ totalLen, totalRescues };
-				vec_ways.push_back(way);
-			}
-			else {
-				findWay(ppnMap, vec_tVisit, pnRescues, nCities, i, nEnd, totalLen, totalRescues);
-			}
-		}
-	}
-}
+const int inf = 999999999;
 
 int main() {
 	int nCities, nRoads;
@@ -42,7 +23,7 @@ int main() {
 		ppnMap[i] = new int[nCities];
 		for (int j = 0; j < nCities; j++) {
 			if (i == j) ppnMap[i][j] = 0;
-			else ppnMap[i][j] = -1;
+			else ppnMap[i][j] = inf;
 		}
 		vec_visit.push_back(false);
 		cin >> pnRescues[i];
@@ -55,32 +36,58 @@ int main() {
 		ppnMap[ter2][ter1] = len;
 	}
 
-	vec_visit[nStart] = true;
-	findWay(ppnMap, vec_visit, pnRescues, nCities, nStart, nEnd, 0, pnRescues[nStart]);		//find all ways from start to end
+	int *pnDis = new int[nCities];
+	int *pnMostRescues = new int[nCities];
+	int *pnShortestNum = new int[nCities];
 
-	vector<Way> vec_shortestWays;															//find shortest way(s)
-	int shortestLen = vec_ways[0].m_nLength;												//
-	for (vector<int>::size_type i = 0; i < vec_ways.size(); i++)							//
-		if (vec_ways[i].m_nLength < shortestLen) shortestLen = vec_ways[i].m_nLength;		//
+	fill(pnDis,pnDis+nCities,inf);
+	copy(pnRescues,pnRescues+nCities,pnMostRescues);
+	fill(pnShortestNum,pnShortestNum+nCities,0);
 
-	for (vector<int>::size_type i = 0; i < vec_ways.size(); i++)							//
-		if (vec_ways[i].m_nLength == shortestLen) vec_shortestWays.push_back(vec_ways[i]);	//
+	pnDis[nStart] = 0;
+	pnShortestNum[nStart] = 1;
+	for(int i = 0;i<nCities;i++){
+		int minCity = -1, shortestRoad = inf;
+		for(int j = 0;j<nCities;j++){
+			if(vec_visit[j]==false&&pnDis[j]<shortestRoad){
+				minCity = j;
+				shortestRoad = pnDis[j];
+			}
+		}
+		if(minCity == -1) break;
 
-	int mostRescues = vec_shortestWays[0].m_nRescues;														//get maximum rescue in shoetest ways
-	for (vector<int>::size_type i = 0; i < vec_shortestWays.size(); i++)									//
-		if (vec_shortestWays[i].m_nRescues > mostRescues) mostRescues = vec_shortestWays[i].m_nRescues;		//
+		vec_visit[minCity] = true;
+		for(int k = 0; k < nCities; k++){
+			if(vec_visit[k]==false &&ppnMap[minCity][k]!=inf){
+				if(shortestRoad + ppnMap[minCity][k] < pnDis[k]){
+					pnDis[k] = shortestRoad + ppnMap[minCity][k];
+					pnShortestNum[k] = pnShortestNum[minCity];
+					pnMostRescues[k] = pnMostRescues[minCity] + pnRescues[k];
+				}
+				else if (shortestRoad + ppnMap[minCity][k] == pnDis[k]){
+					pnShortestNum[k] = pnShortestNum[k]+pnShortestNum[minCity];
+					if(pnMostRescues[minCity] + pnRescues[k] > pnMostRescues[k]){
+						pnMostRescues[k] = pnMostRescues[minCity] + pnRescues[k];
+					}
+				}
+			}
+		}
+	}
 
-	cout << vec_shortestWays.size() << " " << mostRescues << endl;
+	cout<<pnShortestNum[nEnd]<<" "<<pnMostRescues[nEnd];
 
-	for (int i = 0; i < nCities; i++) delete ppnMap[i];			//free memory
-	delete ppnMap;												//
-	delete pnRescues;											//
+	for (int i = 0; i < nCities; i++) delete[] ppnMap[i];			//free memory
+	delete[] ppnMap;												//
+	delete[] pnRescues;												//
+	delete[] pnDis;
+	delete[] pnMostRescues;
+	delete[] pnShortestNum;
 
 	return 0;
 }
 
 /* 
-complete partly.
-there is a segmentation fault returned by PTA and i have no idea about the reason
-this is a find-way algorithm(Dijkstra can only find one way)
+complete by changed dijkstra algorithm
+add array for the number of shortest ways and array for mostRescues
+update data when find a shortest way or equal way 
 */

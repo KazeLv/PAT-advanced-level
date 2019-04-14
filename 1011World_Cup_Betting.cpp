@@ -28,7 +28,6 @@ Bet peekMostProfit(){
 
 int main(){
 
-
 	Bet bet1 = peekMostProfit();
 	Bet bet2 = peekMostProfit();
 	Bet bet3 = peekMostProfit();
