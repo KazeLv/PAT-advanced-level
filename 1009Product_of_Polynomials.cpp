@@ -25,13 +25,20 @@ struct Poly {
 	}
 
 	void insert(float coe, int exp) {
-		PolyNode *p;
+		PolyNode *p,*q;
 		p = m_pHead->next;
+		q = m_pHead;
 		while (p != nullptr) {
 			if (p->exp == exp) {					//the element with specified exponent exists
 				p->coe += coe;						//change the coefficient
+				if(p->coe == 0){
+					q->next = p->next;
+					delete p;
+					m_nNonzero--;
+				}
 				break;
 			}
+			q = p;
 			p = p->next;
 		}
 
@@ -106,3 +113,8 @@ int main() {
 	B.clear();
 	return 0;
 }
+
+/*
+ edge condition: delete node when the sum of coefficient is 0
+ this is completed by linked list and operator overriding, there is a better way by map!
+*/

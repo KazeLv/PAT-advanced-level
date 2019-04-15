@@ -97,5 +97,5 @@ int main(){
 /*
 1. add pattern to tail of string can make it easy to split(no special operation for last substring)
 2. time is a original type, and there are many types have already been defined,so it will be better that designate new class with special name(such as capitalization)
-3. the compiler PAT uses will report error when return nothing to a function that returns integer;
+3. the compiler of PAT uses will report error when return nothing to a function that returns integer;
 */
