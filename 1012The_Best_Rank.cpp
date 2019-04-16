@@ -39,18 +39,52 @@ int main(){
 
 	//rank students' grades according to their respective disciplines
     int rankC = 0, rankM = 0, rankE = 0, rankA = 0;
+    int lastC = -1, lastM = -1, lastE = -1, lastA = -1;
     int score = 100;
     while (score >= 0)
     {
         for (auto iter = map_id_grades.begin(); iter != map_id_grades.end(); iter++)
         {
-            if (iter->second.C == score) map_id_ranks[iter->first].C = ++rankC;
-            if (iter->second.Math == score) map_id_ranks[iter->first].Math = ++rankM;
-            if (iter->second.English == score) map_id_ranks[iter->first].English = ++rankE;
-            if (iter->second.Average == score) map_id_ranks[iter->first].Average = ++rankA;
+            if (iter->second.C == score){
+				if(lastC == score) map_id_ranks[iter->first].C = rankC++;
+                else {
+					map_id_ranks[iter->first].C = ++rankC;
+                    lastC = score;
+                }
+			}
+            if (iter->second.Math == score) {
+                if (lastM == score) map_id_ranks[iter->first].Math = rankM++;
+                else
+                {
+                    map_id_ranks[iter->first].Math = ++rankM;
+                    lastM = score;
+                }
+			}
+            if (iter->second.English == score)
+            {
+                if (lastE == score)
+                    map_id_ranks[iter->first].English = rankE++;
+                else
+                {
+                    map_id_ranks[iter->first].English = ++rankE;
+                    lastE = score;
+                }
+            }
+            if (iter->second.Average == score)
+            {
+                if (lastA == score)
+                    map_id_ranks[iter->first].Average = rankA++;
+                else
+                {
+                    map_id_ranks[iter->first].Average = ++rankA;
+                    lastA = score;
+                }
+            }
         }
         score--;
     }
+
+	//handle same rank problem
 
     //respond check request
     index = 0;
