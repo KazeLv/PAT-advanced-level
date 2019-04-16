@@ -116,3 +116,7 @@ int main(){
 
     return 0;
 }
+
+/*
+edge condition: same score for two student 
+*/
