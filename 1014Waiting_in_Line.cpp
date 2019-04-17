@@ -6,7 +6,6 @@
 using namespace std;
 
 const int timeClose = 540;
-int nResult[1001];
 
 struct Customer{
 	int id;
@@ -16,6 +15,7 @@ struct Customer{
 int main(){
 	int n, m, k, q;
 	cin >> n >> m >> k >> q;
+	int nResult[1001];
 
 	vector<queue<Customer>> vec_queues(n);		//initiate n queues for windows
 	queue<Customer> que_wait;					//customers waiting outside yellow lines
@@ -33,7 +33,7 @@ int main(){
 			if(!vec_queues[i].empty())
 			{
 				vec_queues[i].front().time--;
-				if(vec_queues[i].front().time == 0){
+				if(vec_queues[i].front().time <= 0){
 					nResult[vec_queues[i].front().id] = timeNow;
 					vec_queues[i].pop();
 				}
