@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int getValueInRadix(string &digits,int radix){
+int getValueInDecimal(string &digits,int radix){
 	int value = 0;
 	char cZero = (radix <= 10) ? '0' : 'a';
 	for (int i = 0; i < digits.size(); i++)
@@ -35,14 +35,15 @@ int main(){
 	cin >> n;
 	while(n>=0){
 		cin >> d;
-		string strN = to_string(n);						//get original number in 10 radix
-		int n_10 = getValueInRadix(strN, d);			//
+		int tmp = n;
+		string strReverse;
+		while(tmp>0){
+			strReverse.append(to_string(tmp % d));
+			tmp /= d;
+		}
+		int reverseN = getValueInDecimal(strReverse, d);
 
-		string strReverse = to_string(n_10);			//get reverse number
-		reverse(strReverse.begin(), strReverse.end());	//
-		int reverseN = getValueInRadix(strReverse,10);	//
-
-		if(isPrime(n_10)&&isPrime(reverseN))
+		if(isPrime(n)&&isPrime(reverseN))
 			cout << "Yes" << endl;
 		else
 			cout << "No" << endl;
@@ -52,3 +53,11 @@ int main(){
 
 	return 0;
 }
+
+/*
+the description of this question is ambiguous...the real meaning of it is:
+1. n is a decimal number
+2. we need to transfer n to radix d, then reverse it
+3. get the decimal value of reversed number
+4. judge if n and reverse number are both primes
+*/
