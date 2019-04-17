@@ -27,7 +27,7 @@ int main(){
 	}
 
 	int timeNow = 0;
-	while(timeNow <= timeClose){				//simulate the flow of time
+	while(timeNow < timeClose){					//simulate the flow of time
 		int cnt = 0;							//count of avaliable position inside yellow lines
 		for (int i = 0; i < n;i++){
 			if(!vec_queues[i].empty())
@@ -59,9 +59,19 @@ int main(){
 		timeNow++;
 	}
 
+	//get the finish time of customers still be served at 17:00
+	for (int i = 0; i < n; i++){														
+		if(!vec_queues[i].empty()){
+			nResult[vec_queues[i].front().id] = timeClose - 1 + vec_queues[i].front().time;
+			vec_queues[i].pop();
+		}
+	}
+
 	//bank close, customers who still waiting will get "sorry"
-	for (int i = 0; i < n; i++){
-		while(!vec_queues[i].empty()){
+	for (int i = 0; i < n; i++)
+	{
+		while (!vec_queues[i].empty())
+		{
 			Customer cTmp = vec_queues[i].front();
 			vec_queues[i].pop();
 			nResult[cTmp.id] = -1;
@@ -89,3 +99,9 @@ int main(){
 		}
 	}
 }
+
+/*
+read the description carefully!!!!!!!
+the point is that when it's time for bank to close,the customers who are being served will leave until their transactions done
+only the ones do not stand at head of queue on 17:00 will get sorry 
+*/
