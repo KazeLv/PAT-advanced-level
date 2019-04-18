@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <stack>
 #include <map>
 #include <vector>
 #include <algorithm>
@@ -95,23 +94,14 @@ int main(){
 	m = record.month;
 
 	//find all pairs of records
-	stack<Record> stack_match; 						//stack used to match records
 	for(auto item:map_id_record){
 		vector<Record> &vec_recTmp = item.second;
 		sort(vec_recTmp.begin(),vec_recTmp.end(), [](Record &a, Record &b) { return a < b; });		//sort records for everybody
 
-		for (auto i = vec_recTmp.begin(); i != vec_recTmp.end(); i++){
-			if(stack_match.empty()){
-				stack_match.push(*i);
-			}else{
-				Record &recTmp = stack_match.top();
-				if(recTmp<*i && (recTmp.online == true && i->online == false)){						//one pair of records match
-					map_id_pairs[item.first].push_back(pair<Record, Record>(recTmp, *i));
-					while (!stack_match.empty())  	//clear records(because it's impossile for them to become a memeber of a pair)
-						stack_match.pop();
-				}else{
-					stack_match.push(*i);
-				}
+		for (auto i = vec_recTmp.begin() + 1; i != vec_recTmp.end(); i++)
+		{
+			if((*(i - 1) < *i) && ((i - 1)->online == true && i->online == false)){
+				map_id_pairs[item.first].push_back(pair<Record, Record>(*(i-1), *i));
 			}
 		}
 	}
@@ -140,7 +130,7 @@ int main(){
 			cout << min << " $" << setiosflags(ostream::fixed) << setprecision(2) << double(money) / 100 << endl;
 
 			//accumulate total bill
-			totalMoney += double(money) / 100;
+			totalMoney += money / 100.0;
 		}
 		cout << "Total amount: $" << setiosflags(ostream::fixed) << setprecision(2) << totalMoney << endl;
 	}
