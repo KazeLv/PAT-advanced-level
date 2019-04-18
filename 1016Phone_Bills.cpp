@@ -137,3 +137,8 @@ int main(){
 
 	return 0;
 }
+
+/*
+this is not hard,but troublesome to handle with time calculation
+first try got 21/25, and then i canceled stack,which is unnecessary, and get all pass?? i don't really know what makes it work for test point 1
+*/
