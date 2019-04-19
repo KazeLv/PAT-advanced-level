@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <cstdio>
 #include <vector>
@@ -8,7 +9,6 @@ using namespace std;
 struct Customer{
 	int arriveSec;
 	int pSec = 1;
-	int leaveSec = 0;
 };
 
 int main(){
@@ -22,28 +22,40 @@ int main(){
 		scanf("%d:%d:%d %d", &h, &m, &s, &cTmp.pSec);
 		cTmp.arriveSec = h * 3600 + m * 60 + s;
 		cTmp.pSec *= 60;
-		if(cTmp.arriveSec>(17*3600+1))
+		if(cTmp.arriveSec > (17*3600))		//customers who arrive after 17:00:00 will not be served and count
 			continue;
 		vec_customer.push_back(cTmp);
 	}
-	sort(vec_customer.begin(), vec_customer.end(), [](Customer &a, Customer &b) { return a.arriveSec < b.arriveSec; });
-
+	sort(vec_customer.begin(), vec_customer.end(), [](Customer &a, Customer &b) { return a.arriveSec > b.arriveSec; });
 	int servedN = vec_customer.size();
-
-	Customer *serving = new Customer[k];
 
 	int waitTotal = 0;
 	int sNow = 8 * 3600;
-
-	vector<int>::size_type index = 0;
-	while(index < vec_customer.size()){
-		for (int i = 0; i < k; i++){
-			serving[i].pSec--;
-			if(serving[i].pSec==0 && !vec_customer.empty()){
-				
-				serving[i] = vec_customer.back();
-				vec_customer.pop_back();
+	int emptyWin = k;
+	while(sNow <= (17 * 3600)){
+		if(vec_customer.size() > k){											//there still are customers waiting to be served 
+			for (int i = 0; i < k-emptyWin; i++)
+			{
+				Customer &cTmp = vec_customer[vec_customer.size() - 1 - i];
+				cTmp.pSec--;
+				if (cTmp.pSec == 0)
+				{																//if service is finished,
+					emptyWin++;													//count of empty window will increase
+					vector<Customer>::iterator it = vec_customer.end() - 1 - i; //end erase this customer
+					vec_customer.erase(it);										//
+				}
 			}
-		}
+
+			while(emptyWin>0){
+				Customer &cTmp = vec_customer[vec_customer.size() - 1 - k + emptyWin];		//get the customer who is new to be served
+				waitTotal += sNow - cTmp.arriveSec;											//add his/her waiting time to total counter
+				emptyWin--;	
+			}
+		}else				
+			break;
+		sNow++;
 	}
+
+	if(servedN == 0) cout << 0.0 << endl;
+	else cout << setiosflags(ostream::fixed) << setprecision(1) << waitTotal / 60.0 / servedN << endl;
 }
