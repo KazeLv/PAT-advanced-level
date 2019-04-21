@@ -32,30 +32,37 @@ int main(){
 	int waitTotal = 0;
 	int sNow = 8 * 3600;
 	int emptyWin = k;
-	while(sNow <= (17 * 3600)){
-		if(vec_customer.size() > k){											//there still are customers waiting to be served 
-			for (int i = 0; i < k-emptyWin; i++)
-			{
-				Customer &cTmp = vec_customer[vec_customer.size() - 1 - i];
-				cTmp.pSec--;
-				if (cTmp.pSec == 0)
-				{																//if service is finished,
-					emptyWin++;													//count of empty window will increase
-					vector<Customer>::iterator it = vec_customer.end() - 1 - i; //end erase this customer
-					vec_customer.erase(it);										//
-				}
-			}
+	while(sNow <= (17 * 3600))
+	{
+		while (emptyWin > 0)
+		{
+			if (vec_customer.size() - 1 - k + emptyWin < 0)
+				break;
+			Customer &cTmp = vec_customer[vec_customer.size() - 1 - k + emptyWin]; //get the customer who is new to be served
+			waitTotal += sNow - cTmp.arriveSec;									   //add his/her waiting time to total counter
+			emptyWin--;
+		}
 
-			while(emptyWin>0){
-				Customer &cTmp = vec_customer[vec_customer.size() - 1 - k + emptyWin];		//get the customer who is new to be served
-				waitTotal += sNow - cTmp.arriveSec;											//add his/her waiting time to total counter
-				emptyWin--;	
+		for (int i = 0; i < k; i++)
+		{
+			if (vec_customer.size() - 1 - i < 0)
+				break;
+
+			Customer &cTmp = vec_customer[vec_customer.size() - 1 - i];
+			cTmp.pSec--;
+			if (cTmp.pSec == 0)
+			{																//if service is finished,
+				emptyWin++;													//count of empty window will increase
+				vector<Customer>::iterator it = vec_customer.end() - 1 - i; //end erase this customer
+				vec_customer.erase(it);										//
 			}
-		}else				
-			break;
+		}
+
 		sNow++;
 	}
 
-	if(servedN == 0) cout << 0.0 << endl;
-	else cout << setiosflags(ostream::fixed) << setprecision(1) << waitTotal / 60.0 / servedN << endl;
+	if(servedN == 0)
+		cout << "0.0" << endl;
+	else
+		cout << setiosflags(ostream::fixed) << setprecision(1) << waitTotal / 60.0 / servedN << endl;
 }
