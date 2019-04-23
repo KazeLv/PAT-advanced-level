@@ -46,10 +46,10 @@ int main() {
 
 	pnDis[nStart] = 0;
 	pnShortestNum[nStart] = 1;
-	for(int i = 0;i<nCities;i++){
+	for(int i = 0; i < nCities ; i++){
 		int minCity = -1, shortestRoad = inf;
-		for(int j = 0;j<nCities;j++){
-			if(vec_visit[j]==false&&pnDis[j]<shortestRoad){
+		for(int j = 0; j < nCities; j++){
+			if(vec_visit[j] == false && pnDis[j] < shortestRoad){
 				minCity = j;
 				shortestRoad = pnDis[j];
 			}
