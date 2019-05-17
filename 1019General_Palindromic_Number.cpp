@@ -1,69 +1,45 @@
-// #include <cstdio>
-// using namespace std;
-// int main()
-// {
-// 	int a, b;
-// 	scanf("%d %d", &a, &b);
-// 	int arr[40], index = 0;
-// 	while (a != 0)
-// 	{
-// 		arr[index++] = a % b;
-// 		a = a / b;
-// 	}
-// 	int flag = 0;
-// 	for (int i = 0; i < index / 2; i++)
-// 	{
-// 		if (arr[i] != arr[index - i - 1])
-// 		{
-// 			printf("No\n");
-// 			flag = 1;
-// 			break;
-// 		}
-// 	}
-// 	if (!flag)
-// 		printf("Yes\n");
-// 	for (int i = index - 1; i >= 0; i--)
-// 	{
-// 		printf("%d", arr[i]);
-// 		if (i != 0)
-// 			printf(" ");
-// 	}
-// 	if (index == 0)
-// 		printf("0");
-// 	return 0;
-// }
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-#include <cstdio>
 using namespace std;
-int main()
-{
-	int a, b;
-	scanf("%d %d", &a, &b);
-	int arr[40], index = 0;
-	while (a != 0)
-	{
-		arr[index++] = a % b;
-		a = a / b;
+
+int main(){
+	int nDecimal, nBase;
+	vector<int> vecTarget;
+
+	cin >> nDecimal >> nBase;
+
+	while(nDecimal>0){
+		vecTarget.push_back(nDecimal % nBase);
+		nDecimal /= nBase;
 	}
-	int flag = 0;
-	for (int i = 0; i < index / 2; i++)
-	{
-		if (arr[i] != arr[index - i - 1])
-		{
-			printf("No\n");
-			flag = 1;
+
+	reverse(vecTarget.begin(), vecTarget.end());
+
+	int i = 0;
+	bool isPal = true;
+	while(i<=vecTarget.size()/2){
+		if (vecTarget[i] != vecTarget[vecTarget.size()-1-i]){
+			isPal = false;
 			break;
 		}
+		i++;
 	}
-	if (!flag)
-		printf("Yes\n");
-	for (int i = index - 1; i >= 0; i--)
-	{
-		printf("%d", arr[i]);
-		if (i != 0)
-			printf(" ");
+
+	if(isPal){
+		cout << "Yes" << endl;
+	}else{
+		cout << "No" << endl;
 	}
-	if (index == 0)
-		printf("0");
+	for (int i = 0; i < vecTarget.size();i++){
+		cout << vecTarget[i];
+		if(i!=vecTarget.size()-1){
+			cout << " ";
+		}
+	}
+	cout << endl;
+
 	return 0;
 }
+
