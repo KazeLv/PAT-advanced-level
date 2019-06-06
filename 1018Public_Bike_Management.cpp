@@ -16,7 +16,10 @@ int pnBikes[501];
 int shortestLen = gc_inf;
 vector<vector<int>> vec_shortestWays;
 
-int main(){
+void BFS(vector<bool> vec_visit, vector<int> vec_path, int len);
+
+int main()
+{
 	cin >> capacity >> nStations >> nRoads >> sp;
 
 	for (int i = 0; i <= nStations; i++)
@@ -36,9 +39,37 @@ int main(){
 
 	vec_visit[0] = true;
 	vec_path.push_back(0);
-	int len = 0;
+	len = 0;
 
 	BFS(vec_visit, vec_path, 0);
+
+	int leastBike = gc_inf;
+	int bestWay = 0;
+	int index = 0;
+	do{
+		int nBike = 0;
+		int nStation = 0;
+		for (int i = 1; i < vec_shortestWays[index].size();i++){
+			nBike += pnBikes[vec_shortestWays[index][i]];
+			nStation++;
+		}
+		int needBike = nStation * capacity / 2 - nBike;
+		if(needBike<leastBike){
+			leastBike = needBike;
+			bestWay = index;
+		}
+		index++;
+	} while (index < vec_shortestWays.size());
+
+	cout << shortestLen << " ";
+	for (int i = 0; i < vec_shortestWays[bestWay].size();i++){
+		cout << vec_shortestWays[bestWay][i];
+		if (i != vec_shortestWays[bestWay].size()-1){
+			cout << "->";
+		}else
+			cout << " ";
+	}
+	cout << leastBike << endl;
 }
 
 void BFS(vector<bool> vec_visit, vector<int> vec_path, int len){
@@ -46,16 +77,18 @@ void BFS(vector<bool> vec_visit, vector<int> vec_path, int len){
 	for (int i = 0; i <= nStations;i++){
 		if(vec_visit[i] == false && ppnMap[addr][i] != gc_inf){
 			len += ppnMap[addr][i];
+			vec_path.push_back(i);
 			if(len < shortestLen){
 				if(i == sp){
-					vec_path.push_back(i);
-					
+					vec_shortestWays.clear();
+					vec_shortestWays.push_back(vec_path);
+					shortestLen = len;
 				}else{
-
+					vec_visit[i] = true;
+					BFS(vec_visit, vec_path, len);
 				}
-			}
-			if(len == shortestLen && i == sp){
-
+			}else if(len == shortestLen && i == sp){
+				vec_shortestWays.push_back(vec_path);
 			}
 		}
 	}
