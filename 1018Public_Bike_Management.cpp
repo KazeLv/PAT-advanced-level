@@ -5,11 +5,6 @@ using namespace std;
 
 const int gc_inf = 999999999;
 
-struct Path{
-	vector<int> vec_path;
-	int needBike;
-};
-
 int capacity, nStations, nRoads, sp;
 int ppnMap[501][501];
 int pnBikes[501];
@@ -20,16 +15,19 @@ void BFS(vector<bool> vec_visit, vector<int> vec_path, int len);
 
 int main()
 {
-	cin >> capacity >> nStations >> nRoads >> sp;
+	cin >> capacity >> nStations >> sp >> nRoads;
 
-	for (int i = 0; i <= nStations; i++)
+	fill(ppnMap[0], ppnMap[0] + nStations + 1, gc_inf);
+	ppnMap[0][0] = 0;
+	for (int i = 1; i <= nStations; i++)
 	{
 		cin >> pnBikes[i];
-		fill(ppnMap[i], ppnMap[i] + nStations, gc_inf);
+		fill(ppnMap[i], ppnMap[i] + nStations + 1, gc_inf);
+		ppnMap[i][i] = 0;
 	}
 
 	int t1, t2, len;
-	for (int i = 0; i <= nRoads;i++){
+	for (int i = 0; i < nRoads;i++){
 		cin >> t1 >> t2 >> len;
 		ppnMap[t1][t2] = ppnMap[t2][t1] = len;
 	}
@@ -41,7 +39,7 @@ int main()
 	vec_path.push_back(0);
 	len = 0;
 
-	BFS(vec_visit, vec_path, 0);
+	BFS(vec_visit, vec_path, len);
 
 	int leastBike = gc_inf;
 	int bestWay = 0;
@@ -61,7 +59,7 @@ int main()
 		index++;
 	} while (index < vec_shortestWays.size());
 
-	cout << shortestLen << " ";
+	cout << leastBike << " ";
 	for (int i = 0; i < vec_shortestWays[bestWay].size();i++){
 		cout << vec_shortestWays[bestWay][i];
 		if (i != vec_shortestWays[bestWay].size()-1){
@@ -69,7 +67,7 @@ int main()
 		}else
 			cout << " ";
 	}
-	cout << leastBike << endl;
+	cout << shortestLen << endl;
 }
 
 void BFS(vector<bool> vec_visit, vector<int> vec_path, int len){
