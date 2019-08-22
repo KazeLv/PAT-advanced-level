@@ -31,3 +31,5 @@ int main(){
 	for(int i = 0; i<ans.size();i++) printf("%d%s",ans[i],(i==ans.size()-1?"\n":" "));
 	return 0;
 }
+
+//还可采用临界链表+入度递减的方法判断是否为拓扑序列
